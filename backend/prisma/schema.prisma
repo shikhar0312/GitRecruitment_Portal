@@ -1,0 +1,476 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─── Enums ────────────────────────────────────────────────
+
+enum CustomerStatus {
+  active
+  inactive
+  prospect
+}
+
+enum HiringType {
+  contract
+  permanent
+  fixed_term
+}
+
+enum RequirementStatus {
+  open
+  on_hold
+  filled
+  cancelled
+}
+
+enum WorkMode {
+  onsite
+  remote
+  hybrid
+}
+
+enum Priority {
+  low
+  medium
+  high
+  urgent
+}
+
+enum AvailabilityStatus {
+  immediate
+  notice_period
+  not_looking
+  open_to_opportunities
+}
+
+enum CandidateStatus {
+  active
+  placed
+  inactive
+  blacklisted
+}
+
+enum CandidateSource {
+  referral
+  linkedin
+  job_board
+  direct
+  agency
+}
+
+enum Proficiency {
+  beginner
+  intermediate
+  advanced
+  expert
+}
+
+enum LanguageProficiency {
+  basic
+  conversational
+  professional
+  native
+}
+
+enum EmploymentType {
+  full_time
+  part_time
+  contract
+  freelance
+  internship
+}
+
+enum AllocationStatus {
+  shortlisted
+  screening
+  interviewing
+  offered
+  placed
+  rejected
+  withdrawn
+}
+
+enum RoundType {
+  screening
+  technical
+  hr
+  cultural_fit
+  final
+}
+
+enum InterviewMode {
+  video
+  phone
+  onsite
+}
+
+enum InterviewOutcome {
+  passed
+  failed
+  no_show
+  rescheduled
+}
+
+enum PaymentStatus {
+  pending
+  invoiced
+  paid
+  overdue
+}
+
+enum UserRole {
+  admin
+  recruiter
+  account_manager
+  finance
+  viewer
+}
+
+enum ResumeUploadStatus {
+  pending
+  processing
+  parsed
+  failed
+}
+
+enum BillingEntity {
+  git_uk_ltd
+  git_india_llp
+  git_uae_fze
+}
+
+enum ContactLabel {
+  primary
+  secondary
+  hr
+  procurement
+  finance
+  other
+}
+
+// ─── Tables ───────────────────────────────────────────────
+
+model users {
+  id             String    @id @default(uuid())
+  full_name      String
+  email          String    @unique
+  password_hash  String
+  role           UserRole
+  is_active      Boolean   @default(true)
+  last_login_at  DateTime?
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @updatedAt
+  resume_uploads resume_uploads[]
+
+  // Relations
+  managed_customers    customers[]    @relation("AccountManager")
+  created_requirements requirements[] @relation("CreatedByUser")
+  created_candidates   candidates[]   @relation("CreatedByUser")
+  created_allocations  allocations[]  @relation("CreatedByUser")
+}
+
+model customers {
+  id                 String         @id @default(uuid())
+  name               String
+  industry           String?
+  website            String?
+  country            String?
+  city               String?
+  account_manager_id String?
+  status             CustomerStatus
+  notes              String?
+  created_at         DateTime       @default(now())
+  updated_at         DateTime       @updatedAt
+
+  // Relations
+  account_manager users?              @relation("AccountManager", fields: [account_manager_id], references: [id])
+  requirements    requirements[]
+  contacts        customer_contacts[]
+}
+
+model customer_contacts {
+  id          String       @id @default(uuid())
+  customer_id String
+  name        String
+  email       String?
+  phone       String?
+  label       ContactLabel
+  is_primary  Boolean      @default(false)
+  notes       String?
+  created_at  DateTime     @default(now())
+  updated_at  DateTime     @updatedAt
+
+  customer customers @relation(fields: [customer_id], references: [id], onDelete: Cascade)
+}
+
+model roles {
+  id          String   @id @default(uuid())
+  title       String
+  category    String?
+  description String?
+  created_at  DateTime @default(now())
+
+  // Relations
+  requirements requirements[]
+}
+
+model requirements {
+  id                         String             @id @default(uuid())
+  serial_no                  Int                @default(autoincrement()) @unique
+  customer_id                String
+  role_id                    String
+  billing_entity             BillingEntity
+  status                     RequirementStatus
+  min_exp_years              Int
+  max_exp_years              Int
+  budget_min                 Decimal?
+  budget_max                 Decimal?
+  budget_currency             String             @db.VarChar(3)
+  hiring_type                 HiringType
+  min_contract_months         Int?
+  expected_start_date         DateTime?          @db.Date
+  notice_period_buyback       Boolean
+  no_of_positions             Int
+  filled_positions            Int                @default(0)
+  location                    String
+  work_mode                   WorkMode
+  job_description              String?
+  required_skills              String[]
+  nice_to_have_skills          String[]
+  priority                     Priority
+  visa_sponsorship_available   Boolean?
+  clearance_required           String?
+  closing_date                 DateTime?          @db.Date
+  created_by                   String
+  created_at                   DateTime           @default(now())
+  updated_at                   DateTime           @updatedAt
+
+  // Relations
+  customer    customers     @relation(fields: [customer_id], references: [id])
+  role        roles         @relation(fields: [role_id], references: [id])
+  creator     users         @relation("CreatedByUser", fields: [created_by], references: [id])
+  allocations allocations[]
+}
+
+model candidates {
+  id                   String             @id @default(uuid())
+  full_name            String
+  email                String             @unique
+  phone                String
+  alternate_phone      String?
+  linkedin_url         String?
+  github_url           String?
+  portfolio_url        String?
+  date_of_birth        DateTime?          @db.Date
+  gender               String?
+  nationality          String?
+  current_location     String?
+  preferred_location   String?
+  willing_to_relocate  Boolean?
+  exp_years            Int
+  current_company      String?
+  current_role         String?
+  current_ctc          Decimal?
+  expected_ctc         Decimal?
+  expected_day_rate    Decimal?
+  currency             String             @db.VarChar(3)
+  notice_period_days   Int?
+  availability_date    DateTime?          @db.Date
+  availability_status  AvailabilityStatus
+  highest_qualification String?
+  requires_visa_sponsorship Boolean?
+  visa_status               String?
+  security_clearance_level  String?
+  security_clearance_expiry DateTime? @db.Date
+  resume_url           String?
+  resume_generated_at  DateTime?
+  resume_uploads       resume_uploads[]
+  source               CandidateSource?
+  referred_by          String?
+  status               CandidateStatus
+  notes                String?
+  created_by           String
+  created_at            DateTime          @default(now())
+  updated_at            DateTime          @updatedAt
+
+  // Relations
+  creator       users                      @relation("CreatedByUser", fields: [created_by], references: [id])
+  skills        candidate_skills[]
+  work_history  candidate_work_history[]
+  education     candidate_education[]
+  certifications candidate_certifications[]
+  languages     candidate_languages[]
+  allocations   allocations[]
+}
+
+model candidate_skills {
+  id           String      @id @default(uuid())
+  candidate_id String
+  skill        String
+  years_exp    Int?
+  proficiency  Proficiency?
+  is_primary   Boolean     @default(false)
+
+  candidate candidates @relation(fields: [candidate_id], references: [id], onDelete: Cascade)
+}
+
+model candidate_work_history {
+  id              String         @id @default(uuid())
+  candidate_id    String
+  company_name    String
+  role_title      String
+  employment_type EmploymentType
+  location        String?
+  start_date      DateTime       @db.Date
+  end_date        DateTime?      @db.Date
+  is_current      Boolean
+  responsibilities String?
+  achievements    String?
+  technologies_used String[]
+
+  candidate candidates @relation(fields: [candidate_id], references: [id], onDelete: Cascade)
+}
+
+model candidate_education {
+  id             String   @id @default(uuid())
+  candidate_id   String
+  institution    String
+  degree         String
+  field_of_study String?
+  grade          String?
+  start_year     Int?
+  end_year       Int?
+  is_current     Boolean  @default(false)
+
+  candidate candidates @relation(fields: [candidate_id], references: [id], onDelete: Cascade)
+}
+
+model candidate_certifications {
+  id                   String    @id @default(uuid())
+  candidate_id         String
+  name                 String
+  issuing_organization String
+  issue_date           DateTime? @db.Date
+  expiry_date          DateTime? @db.Date
+  credential_id        String?
+  credential_url       String?
+
+  candidate candidates @relation(fields: [candidate_id], references: [id], onDelete: Cascade)
+}
+
+model candidate_languages {
+  id           String              @id @default(uuid())
+  candidate_id String
+  language     String
+  proficiency  LanguageProficiency
+
+  candidate candidates @relation(fields: [candidate_id], references: [id], onDelete: Cascade)
+}
+
+model allocations {
+  id                    String           @id @default(uuid())
+  requirement_id        String
+  candidate_id          String
+  status                AllocationStatus
+  expected_availability DateTime?        @db.Date
+  match_score           Decimal?
+  rejection_reason      String?
+  offer_date            DateTime?        @db.Date
+  placed_date           DateTime?        @db.Date
+  notes                 String?
+  created_by            String
+  applied_at            DateTime         @default(now())
+  updated_at            DateTime         @updatedAt
+
+  // Relations
+  requirement      requirements       @relation(fields: [requirement_id], references: [id])
+  candidate        candidates         @relation(fields: [candidate_id], references: [id])
+  creator          users              @relation("CreatedByUser", fields: [created_by], references: [id])
+  interview_rounds interview_rounds[]
+  margin_record    margin_records?
+  @@unique([requirement_id, candidate_id])
+}
+
+model interview_rounds {
+  id             String            @id @default(uuid())
+  allocation_id  String
+  round_number   Int
+  round_type     RoundType
+  scheduled_at   DateTime?
+  conducted_by   String?
+  mode           InterviewMode?
+  outcome        InterviewOutcome?
+  feedback       String?
+  created_at     DateTime          @default(now())
+  updated_at     DateTime          @updatedAt
+
+  allocation allocations @relation(fields: [allocation_id], references: [id], onDelete: Cascade)
+}
+
+model margin_records {
+  id                      String        @id @default(uuid())
+  allocation_id           String        @unique
+  billing_entity          BillingEntity
+
+  demand_amount           Decimal
+  demand_currency         String        @db.VarChar(3)
+  demand_fx_rate          Decimal
+  demand_converted        Decimal
+
+  billed_amount           Decimal
+  billed_currency         String        @db.VarChar(3)
+  billed_fx_rate          Decimal
+  billed_converted        Decimal
+  billed_converted_yearly Decimal?
+
+  margin_amount           Decimal
+  margin_pct              Decimal
+  reporting_currency      String        @db.VarChar(3)
+  fx_rate_locked_at       DateTime      @default(now())
+
+  invoice_ref             String?
+  billing_period_start    DateTime?     @db.Date
+  billing_period_end      DateTime?     @db.Date
+  payment_status          PaymentStatus
+  notes                   String?
+  created_at              DateTime      @default(now())
+  updated_at              DateTime      @updatedAt
+
+  allocation allocations @relation(fields: [allocation_id], references: [id])
+}
+
+model resume_templates {
+  id                 String   @id @default(uuid())
+  name               String
+  bucket_label       String   @unique
+  min_exp_years      Int
+  max_exp_years      Int
+  template_file_path String
+  is_active          Boolean  @default(true)
+  created_at         DateTime @default(now())
+  updated_at         DateTime @updatedAt
+}
+
+model resume_uploads {
+  id                String              @id @default(uuid())
+  candidate_id      String?
+  original_filename String
+  file_path         String
+  file_type         String
+  status            ResumeUploadStatus  @default(pending)
+  raw_ocr_text      String?
+  parsed_data       Json?
+  error_message     String?
+  uploaded_by       String
+  created_at        DateTime            @default(now())
+  updated_at        DateTime            @updatedAt
+
+  candidate candidates? @relation(fields: [candidate_id], references: [id])
+  uploader  users       @relation(fields: [uploaded_by], references: [id])
+}

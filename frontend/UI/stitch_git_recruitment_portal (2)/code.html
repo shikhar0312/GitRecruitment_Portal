@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Candidates - GIT Recruitment Portal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+                  "surface-container-low": "#f2f4f6",
+                  "on-error-container": "#93000a",
+                  "outline": "#857461",
+                  "on-background": "#191c1e",
+                  "inverse-primary": "#ffb952",
+                  "on-primary-fixed-variant": "#633f00",
+                  "surface-container-lowest": "#ffffff",
+                  "secondary-fixed": "#d9e3f6",
+                  "on-secondary": "#ffffff",
+                  "surface-dim": "#d8dadc",
+                  "inverse-on-surface": "#eff1f3",
+                  "surface-container-high": "#e6e8ea",
+                  "on-tertiary-container": "#3d4754",
+                  "on-primary-fixed": "#291800",
+                  "on-surface": "#191c1e",
+                  "primary-fixed-dim": "#ffb952",
+                  "background": "#f7f9fb",
+                  "on-tertiary": "#ffffff",
+                  "surface": "#f7f9fb",
+                  "on-tertiary-fixed": "#121c28",
+                  "tertiary": "#555f6d",
+                  "on-tertiary-fixed-variant": "#3e4755",
+                  "surface-tint": "#825500",
+                  "on-primary": "#ffffff",
+                  "inverse-surface": "#2d3133",
+                  "on-error": "#ffffff",
+                  "outline-variant": "#d7c3ad",
+                  "on-secondary-container": "#596373",
+                  "primary": "#825500",
+                  "surface-container": "#eceef0",
+                  "secondary-container": "#d6e0f3",
+                  "tertiary-fixed-dim": "#bdc7d8",
+                  "surface-container-highest": "#e0e3e5",
+                  "surface-bright": "#f7f9fb",
+                  "primary-fixed": "#ffddb4",
+                  "on-surface-variant": "#524433",
+                  "error": "#ba1a1a",
+                  "secondary-fixed-dim": "#bdc7d9",
+                  "on-secondary-fixed-variant": "#3d4756",
+                  "primary-container": "#f5a300",
+                  "on-secondary-fixed": "#121c2a",
+                  "tertiary-fixed": "#d9e3f4",
+                  "surface-variant": "#e0e3e5",
+                  "error-container": "#ffdad6",
+                  "secondary": "#555f6f",
+                  "on-primary-container": "#623f00",
+                  "tertiary-container": "#abb5c5"
+          },
+          "borderRadius": {
+                  "DEFAULT": "0.25rem",
+                  "lg": "0.5rem",
+                  "xl": "0.75rem",
+                  "full": "9999px"
+          },
+          "spacing": {
+                  "element-gap": "16px",
+                  "container-padding-desktop": "32px",
+                  "section-gap": "64px",
+                  "unit": "4px",
+                  "gutter": "24px",
+                  "container-padding-mobile": "16px"
+          },
+          "fontFamily": {
+                  "body-sm": ["Inter"],
+                  "headline-sm": ["Inter"],
+                  "label-md": ["Inter"],
+                  "headline-lg": ["Inter"],
+                  "body-lg": ["Inter"],
+                  "display-lg": ["Inter"],
+                  "body-md": ["Inter"],
+                  "label-sm": ["Inter"],
+                  "headline-md": ["Inter"],
+                  "headline-lg-mobile": ["Inter"]
+          },
+          "fontSize": {
+                  "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                  "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                  "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                  "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                  "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                  "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                  "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                  "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                  "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                  "headline-lg-mobile": ["28px", {"lineHeight": "36px", "fontWeight": "600"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body { font-family: 'Inter', sans-serif; }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #e0e3e5; border-radius: 10px; }
+    .drawer-transition { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+  </style>
+</head>
+<body class="bg-background text-on-surface flex h-screen overflow-hidden">
+<!-- Side Navigation -->
+<aside class="hidden md:flex flex-col h-full sticky top-0 bg-[#1f2937] h-screen w-64 flex-shrink-0 shadow-sm z-50">
+<div class="p-6 flex flex-col gap-1">
+<h1 class="font-headline-md text-headline-md font-bold text-surface-container-lowest">GIT Tech</h1>
+<p class="font-label-md text-label-md text-surface-container-lowest/60">Enterprise Portal</p>
+</div>
+<nav class="flex-1 mt-4">
+<a class="flex items-center gap-3 px-4 py-3 text-surface-container-lowest/80 hover:bg-surface-variant/5 hover:text-surface-container-lowest transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-surface-container-lowest/80 hover:bg-surface-variant/5 hover:text-surface-container-lowest transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">work</span>
+<span class="font-label-md text-label-md">Jobs</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-primary border-l-4 border-primary bg-surface-variant/10 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-md text-label-md">Candidates</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-surface-container-lowest/80 hover:bg-surface-variant/5 hover:text-surface-container-lowest transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-label-md text-label-md">Interviews</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-surface-container-lowest/80 hover:bg-surface-variant/5 hover:text-surface-container-lowest transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">database</span>
+<span class="font-label-md text-label-md">Talent Pool</span>
+</a>
+</nav>
+<div class="p-4 border-t border-surface-variant/10">
+<a class="flex items-center gap-3 px-4 py-3 text-surface-container-lowest/80 hover:bg-surface-variant/5 hover:text-surface-container-lowest transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Wrapper -->
+<div class="flex-1 flex flex-col min-w-0 bg-background overflow-hidden relative">
+<!-- Top Bar -->
+<header class="flex justify-between items-center w-full px-container-padding-desktop h-16 sticky top-0 z-40 bg-surface-container-lowest border-b border-outline-variant">
+<div class="flex items-center gap-6 flex-1">
+<div class="relative w-full max-w-md">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface-container-low border-none rounded-lg pl-10 py-2 font-body-md text-body-md focus:ring-2 focus:ring-primary/20" placeholder="Search across GIT Software Technologies..." type="text"/>
+</div>
+<nav class="hidden lg:flex items-center gap-6">
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors" href="#">Analytics</a>
+<a class="text-on-surface-variant font-body-md hover:text-primary transition-colors" href="#">Reports</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant p-2 hover:bg-surface-container-low rounded-full transition-colors">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant p-2 hover:bg-surface-container-low rounded-full transition-colors">help_outline</button>
+<div class="h-8 w-8 rounded-full bg-primary-container flex items-center justify-center overflow-hidden">
+<img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD81LJ35FENv2FpfE-7IOwpTQr2oRl0tKf85F2BGm0PCZuPt_aD6nQ7A0bV2hAXSkpXOxTo-Z0gbNG-5nsYGaTlH8ng3uAgQ1czoLfsBlrCP-bD9pXT1NgBI3JZ3b-miUjhOvNEx0ykaLUODClbkZy55T7_WuOJswDrzflp0fQxPgS9YZEQko_Hm1tmFbbKFHyhe8p4hayl-H5MLibfCdyvhRrHHx30PLk86SXkTgiFIdhYXRiQcl5mTO4ej-9TjKXXYtfoWJEAdcvt"/>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<main class="flex-1 overflow-y-auto p-container-padding-desktop flex flex-col gap-8">
+<!-- Page Header -->
+<div class="flex justify-between items-end">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Candidates</h2>
+<nav class="flex text-on-surface-variant font-label-md text-label-md mt-1">
+<span class="hover:text-primary cursor-pointer">Talent Acquisition</span>
+<span class="mx-2">/</span>
+<span>Active Pipeline</span>
+</nav>
+</div>
+<button class="bg-primary-container text-on-primary-container px-6 py-3 rounded-lg font-label-md text-label-md font-bold flex items-center gap-2 hover:opacity-90 transition-all active:scale-95 shadow-sm" onclick="toggleDrawer()">
+<span class="material-symbols-outlined">person_add</span>
+          Add Candidate
+        </button>
+</div>
+<!-- Toolbar / Filters -->
+<section class="bg-surface-container-lowest p-4 rounded-xl border border-outline-variant shadow-sm flex flex-wrap items-center gap-4">
+<div class="flex items-center gap-2 px-3 py-2 border border-outline-variant rounded-lg bg-white min-w-[200px]">
+<span class="material-symbols-outlined text-on-surface-variant">filter_list</span>
+<span class="text-on-surface-variant font-label-md">Status: All Active</span>
+</div>
+<div class="flex items-center gap-2 px-3 py-2 border border-outline-variant rounded-lg bg-white min-w-[180px]">
+<span class="material-symbols-outlined text-on-surface-variant">location_on</span>
+<span class="text-on-surface-variant font-label-md">Any Location</span>
+</div>
+<div class="flex items-center gap-2 px-3 py-2 border border-outline-variant rounded-lg bg-white min-w-[180px]">
+<span class="material-symbols-outlined text-on-surface-variant">star</span>
+<span class="text-on-surface-variant font-label-md">Exp: 5+ Years</span>
+</div>
+<div class="ml-auto flex items-center gap-2">
+<span class="text-on-surface-variant font-label-md mr-2">Showing 0 of 0 candidates</span>
+<button class="p-2 border border-outline-variant rounded-lg hover:bg-surface-container-low transition-colors"><span class="material-symbols-outlined text-on-surface-variant">download</span></button>
+<button class="p-2 border border-outline-variant rounded-lg hover:bg-surface-container-low transition-colors"><span class="material-symbols-outlined text-on-surface-variant">more_vert</span></button>
+</div>
+</section>
+<!-- Data Table Main Area -->
+<section class="flex-1 bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm flex flex-col min-h-[400px]">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant bg-surface-container-low/30">
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Name</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Contact</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Experience</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Location</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Availability</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Day Rate</th>
+<th class="px-6 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Skills</th>
+</tr>
+</thead>
+<tbody>
+<!-- Empty State -->
+<tr>
+<td class="py-32" colspan="7">
+<div class="flex flex-col items-center justify-center text-center opacity-60">
+<div class="w-24 h-24 bg-surface-container-low rounded-full flex items-center justify-center mb-6">
+<span class="material-symbols-outlined text-display-lg" style="font-size: 48px;">person_search</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface mb-2">No records found</h3>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-sm">
+                      We couldn't find any candidates matching your current filters. Try adjusting your search criteria or adding a new candidate.
+                    </p>
+<button class="mt-6 border-1.5px border-outline-variant bg-white px-6 py-2 rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors">
+                      Clear all filters
+                    </button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</main>
+<!-- Side Drawer (Candidate Profile Placeholder) -->
+<div class="hidden fixed inset-0 bg-black/20 backdrop-blur-sm z-[60]" id="drawer-overlay" onclick="toggleDrawer()"></div>
+<aside class="fixed right-0 top-0 h-screen w-[600px] bg-white shadow-2xl z-[70] translate-x-full drawer-transition flex flex-col border-l border-outline-variant" id="candidate-drawer">
+<!-- Drawer Header -->
+<div class="p-6 border-b border-outline-variant flex justify-between items-start">
+<div class="flex items-center gap-4">
+<div class="w-16 h-16 rounded-xl bg-surface-container-low flex items-center justify-center overflow-hidden">
+<span class="material-symbols-outlined text-on-surface-variant" style="font-size: 32px;">person</span>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md">Candidate Profile</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Select a candidate to view details</p>
+</div>
+</div>
+<button class="p-2 hover:bg-surface-container-low rounded-full transition-colors" onclick="toggleDrawer()">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<!-- Tabs Navigation -->
+<div class="flex px-6 border-b border-outline-variant bg-surface-container-low/20 overflow-x-auto no-scrollbar">
+<button class="px-4 py-4 font-label-md text-label-md text-primary border-b-2 border-primary whitespace-nowrap">Overview</button>
+<button class="px-4 py-4 font-label-md text-label-md text-on-surface-variant hover:text-primary whitespace-nowrap">Skills</button>
+<button class="px-4 py-4 font-label-md text-label-md text-on-surface-variant hover:text-primary whitespace-nowrap">Work History</button>
+<button class="px-4 py-4 font-label-md text-label-md text-on-surface-variant hover:text-primary whitespace-nowrap">Education</button>
+<button class="px-4 py-4 font-label-md text-label-md text-on-surface-variant hover:text-primary whitespace-nowrap">Certifications</button>
+<button class="px-4 py-4 font-label-md text-label-md text-on-surface-variant hover:text-primary whitespace-nowrap">Languages</button>
+<button class="px-4 py-4 font-label-md text-label-md text-on-surface-variant hover:text-primary whitespace-nowrap">Applications</button>
+</div>
+<!-- Drawer Content Area -->
+<div class="flex-1 overflow-y-auto p-8 bg-background/50 custom-scrollbar">
+<div class="flex flex-col items-center justify-center h-full text-center py-20 opacity-40">
+
+<p class="font-body-md text-body-md">Select a record from the table to populate this profile view.</p>
+</div>
+</div>
+<!-- Drawer Footer -->
+<div class="p-6 border-t border-outline-variant bg-white flex gap-4">
+<button class="flex-1 bg-primary text-white py-3 rounded-lg font-label-md text-label-md font-semibold hover:opacity-90">Schedule Interview</button>
+<button class="px-6 py-3 border border-outline-variant rounded-lg font-label-md text-label-md hover:bg-surface-container-low">Download CV</button>
+</div>
+</aside>
+</div>
+<script>
+    function toggleDrawer() {
+      const drawer = document.getElementById('candidate-drawer');
+      const overlay = document.getElementById('drawer-overlay');
+      const isHidden = drawer.classList.contains('translate-x-full');
+      
+      if (isHidden) {
+        drawer.classList.remove('translate-x-full');
+        overlay.classList.remove('hidden');
+      } else {
+        drawer.classList.add('translate-x-full');
+        overlay.classList.add('hidden');
+      }
+    }
+
+    // Micro-interaction for row clicks (even though empty)
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        const drawer = document.getElementById('candidate-drawer');
+        if (!drawer.classList.contains('translate-x-full')) toggleDrawer();
+      }
+    });
+  </script>
+</body></html>

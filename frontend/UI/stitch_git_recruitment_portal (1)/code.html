@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-shadow-l1 {
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .transition-standard {
+            transition: all 0.2s ease-in-out;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-low": "#f2f4f6",
+                      "on-error-container": "#93000a",
+                      "outline": "#857461",
+                      "on-background": "#191c1e",
+                      "inverse-primary": "#ffb952",
+                      "on-primary-fixed-variant": "#633f00",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-fixed": "#d9e3f6",
+                      "on-secondary": "#ffffff",
+                      "surface-dim": "#d8dadc",
+                      "inverse-on-surface": "#eff1f3",
+                      "surface-container-high": "#e6e8ea",
+                      "on-tertiary-container": "#3d4754",
+                      "on-primary-fixed": "#291800",
+                      "on-surface": "#191c1e",
+                      "primary-fixed-dim": "#ffb952",
+                      "background": "#f7f9fb",
+                      "on-tertiary": "#ffffff",
+                      "surface": "#f7f9fb",
+                      "on-tertiary-fixed": "#121c28",
+                      "tertiary": "#555f6d",
+                      "on-tertiary-fixed-variant": "#3e4755",
+                      "surface-tint": "#825500",
+                      "on-primary": "#ffffff",
+                      "inverse-surface": "#2d3133",
+                      "on-error": "#ffffff",
+                      "outline-variant": "#d7c3ad",
+                      "on-secondary-container": "#596373",
+                      "primary": "#825500",
+                      "surface-container": "#eceef0",
+                      "secondary-container": "#d6e0f3",
+                      "tertiary-fixed-dim": "#bdc7d8",
+                      "surface-container-highest": "#e0e3e5",
+                      "surface-bright": "#f7f9fb",
+                      "primary-fixed": "#ffddb4",
+                      "on-surface-variant": "#524433",
+                      "error": "#ba1a1a",
+                      "secondary-fixed-dim": "#bdc7d9",
+                      "on-secondary-fixed-variant": "#3d4756",
+                      "primary-container": "#f5a300",
+                      "on-secondary-fixed": "#121c2a",
+                      "tertiary-fixed": "#d9e3f4",
+                      "surface-variant": "#e0e3e5",
+                      "error-container": "#ffdad6",
+                      "secondary": "#555f6f",
+                      "on-primary-container": "#623f00",
+                      "tertiary-container": "#abb5c5"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px",
+                      "brand": "12px"
+              },
+              "spacing": {
+                      "element-gap": "16px",
+                      "container-padding-desktop": "32px",
+                      "section-gap": "64px",
+                      "unit": "4px",
+                      "gutter": "24px",
+                      "container-padding-mobile": "16px"
+              },
+              "fontFamily": {
+                      "body-sm": ["Inter"],
+                      "headline-sm": ["Inter"],
+                      "label-md": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-md": ["Inter"]
+              },
+              "fontSize": {
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface">
+<div class="flex min-h-screen">
+<!-- SideNavBar - JSON Component 1 -->
+<aside class="hidden md:flex flex-col h-screen w-64 flex-shrink-0 sticky top-0 bg-[#1f2937] shadow-sm z-50">
+<div class="p-6 flex flex-col gap-1">
+<div class="font-headline-md text-headline-md font-bold text-surface-container-lowest">GIT Tech</div>
+<div class="text-[12px] uppercase tracking-wider text-surface-container-lowest/50 font-bold">Enterprise Portal</div>
+</div>
+<nav class="flex-1 px-4 py-4 space-y-1">
+<!-- Dashboard is Active -->
+<a class="flex items-center gap-3 px-4 py-3 text-primary border-l-4 border-primary bg-surface-variant/10 transition-colors duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-surface-container-lowest/80 hover:bg-surface-variant/5 hover:text-surface-container-lowest transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">work</span>
+<span class="font-label-md text-label-md">Jobs</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-surface-container-lowest/80 hover:bg-surface-variant/5 hover:text-surface-container-lowest transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-md text-label-md">Candidates</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-surface-container-lowest/80 hover:bg-surface-variant/5 hover:text-surface-container-lowest transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">calendar_today</span>
+<span class="font-label-md text-label-md">Interviews</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-surface-container-lowest/80 hover:bg-surface-variant/5 hover:text-surface-container-lowest transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">database</span>
+<span class="font-label-md text-label-md">Talent Pool</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-surface-container-lowest/80 hover:bg-surface-variant/5 hover:text-surface-container-lowest transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<div class="p-4 border-t border-surface-variant/10">
+<div class="flex items-center gap-3 px-4 py-3">
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-bold text-xs">GT</div>
+<div class="flex flex-col">
+<span class="text-surface-container-lowest text-xs font-semibold">Admin Portal</span>
+<span class="text-surface-container-lowest/50 text-[10px]">v2.4.0-stable</span>
+</div>
+</div>
+</div>
+</aside>
+<div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+<!-- TopNavBar - JSON Component 2 -->
+<header class="flex justify-between items-center w-full px-container-padding-desktop h-16 sticky top-0 z-40 bg-surface-container-lowest border-b border-outline-variant">
+<div class="flex items-center gap-8">
+<div class="font-headline-sm text-headline-sm font-black text-on-surface">GIT Software Technologies</div>
+<div class="hidden lg:flex items-center gap-6">
+<a class="text-primary font-bold border-b-2 border-primary pb-1 font-body-md text-body-md cursor-pointer active:opacity-80" href="#">Dashboard</a>
+<a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors cursor-pointer active:opacity-80" href="#">Analytics</a>
+<a class="text-on-surface-variant font-body-md text-body-md hover:text-primary transition-colors cursor-pointer active:opacity-80" href="#">Reports</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-brand text-sm focus:ring-2 focus:ring-primary/20 w-64 transition-all" placeholder="Search..." type="text"/>
+</div>
+<button class="bg-primary-container text-on-primary-container px-4 py-2 rounded-brand font-semibold text-sm hover:opacity-90 transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                        Add New
+                    </button>
+<div class="flex items-center gap-2 border-l pl-4 border-outline-variant">
+<button class="p-2 text-on-surface-variant hover:bg-surface-variant/10 rounded-full transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full"></span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-variant/10 rounded-full transition-colors">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<img alt="User Profile" class="w-8 h-8 rounded-full ml-2 object-cover border border-outline-variant" data-alt="A professional headshot of a recruitment manager in a clean corporate office environment. The person has a friendly but authoritative expression, with soft professional lighting accentuating their features. The background is a slightly blurred, high-end modern office with glass partitions and gold accents, matching a premium enterprise SaaS aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBsrJ53QzjMtpanjgxB46H7fyaOdHRihGpD1valnPGBD8KaTDyLpa3WgTR7P2DzqlYXrUdxk26BY28zkD8QH4pAEp0jK3bXFybQtM5kdUgev7R-1IYS8aM3dbShtebf5pgUqnLPZmOriUkIu_Difa4VQR4aiRCnlMyXDilw99qYZKMITuWOCy1Bf1TN9tOgOosKnIJufq-_6KYOQ1BuUtLIh8bxttFP-clQboPQ2iFHOgaICinKg5IdtpTaZGsEmkVwu1RkUpWMHOfK"/>
+</div>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-1 overflow-y-auto p-container-padding-desktop space-y-gutter">
+<!-- Welcome Section -->
+<section class="flex flex-col gap-1">
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Recruitment Overview</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Track your hiring pipeline and enterprise growth metrics in real-time.</p>
+</section>
+<!-- KPI Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest p-6 rounded-brand border border-outline-variant custom-shadow-l1 flex flex-col gap-4 group hover:border-primary/30 transition-standard">
+<div class="flex justify-between items-start">
+<div class="p-3 bg-primary/5 text-primary rounded-xl">
+<span class="material-symbols-outlined">work</span>
+</div>
+<span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">LIVE</span>
+</div>
+<div>
+<div class="text-display-lg font-display-lg text-on-surface group-hover:text-primary transition-standard">0</div>
+<div class="font-label-md text-label-md text-on-surface-variant">Active Openings</div>
+</div>
+<div class="pt-4 border-t border-outline-variant/50">
+<div class="h-1.5 w-full bg-surface-container-low rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-0"></div>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest p-6 rounded-brand border border-outline-variant custom-shadow-l1 flex flex-col gap-4 group hover:border-primary/30 transition-standard">
+<div class="flex justify-between items-start">
+<div class="p-3 bg-primary/5 text-primary rounded-xl">
+<span class="material-symbols-outlined">group</span>
+</div>
+</div>
+<div>
+<div class="text-display-lg font-display-lg text-on-surface group-hover:text-primary transition-standard">0</div>
+<div class="font-label-md text-label-md text-on-surface-variant">Total Candidates</div>
+</div>
+<div class="pt-4 border-t border-outline-variant/50">
+<div class="h-1.5 w-full bg-surface-container-low rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-0"></div>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest p-6 rounded-brand border border-outline-variant custom-shadow-l1 flex flex-col gap-4 group hover:border-primary/30 transition-standard">
+<div class="flex justify-between items-start">
+<div class="p-3 bg-primary/5 text-primary rounded-xl">
+<span class="material-symbols-outlined">description</span>
+</div>
+<span class="text-[10px] font-bold text-on-surface-variant bg-surface-container-low px-2 py-1 rounded-full">THIS MONTH</span>
+</div>
+<div>
+<div class="text-display-lg font-display-lg text-on-surface group-hover:text-primary transition-standard">0</div>
+<div class="font-label-md text-label-md text-on-surface-variant">Applications</div>
+</div>
+<div class="pt-4 border-t border-outline-variant/50">
+<div class="h-1.5 w-full bg-surface-container-low rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-0"></div>
+</div>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-container-lowest p-6 rounded-brand border border-outline-variant custom-shadow-l1 flex flex-col gap-4 group hover:border-primary/30 transition-standard">
+<div class="flex justify-between items-start">
+<div class="p-3 bg-primary/5 text-primary rounded-xl">
+<span class="material-symbols-outlined">handshake</span>
+</div>
+</div>
+<div>
+<div class="text-display-lg font-display-lg text-on-surface group-hover:text-primary transition-standard">0</div>
+<div class="font-label-md text-label-md text-on-surface-variant">Total Placements</div>
+</div>
+<div class="pt-4 border-t border-outline-variant/50">
+<div class="h-1.5 w-full bg-surface-container-low rounded-full overflow-hidden">
+<div class="h-full bg-primary-container w-0"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Actions Section -->
+<section class="space-y-6">
+<div class="flex items-center justify-between">
+<h2 class="font-headline-md text-headline-md text-on-surface">Quick Actions</h2>
+<span class="text-xs font-bold text-primary px-3 py-1 bg-primary/5 rounded-full uppercase tracking-widest">Efficiency Tools</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<!-- Action Card 1 -->
+<button class="bg-surface-container-lowest p-6 rounded-brand border border-outline-variant custom-shadow-l1 hover:shadow-md hover:border-primary-container transition-all text-left flex flex-col gap-4 group">
+<div class="w-12 h-12 rounded-brand bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary-container group-hover:text-on-primary-container transition-standard">
+<span class="material-symbols-outlined">add_business</span>
+</div>
+<div>
+<div class="font-headline-sm text-headline-sm text-on-surface">Add Job Opening</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Configure a new requisition for engineering talent.</p>
+</div>
+</button>
+<!-- Action Card 2 -->
+<button class="bg-surface-container-lowest p-6 rounded-brand border border-outline-variant custom-shadow-l1 hover:shadow-md hover:border-primary-container transition-all text-left flex flex-col gap-4 group">
+<div class="w-12 h-12 rounded-brand bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary-container group-hover:text-on-primary-container transition-standard">
+<span class="material-symbols-outlined">person_add</span>
+</div>
+<div>
+<div class="font-headline-sm text-headline-sm text-on-surface">Add Candidate</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Import new professional profiles to your pool.</p>
+</div>
+</button>
+<!-- Action Card 3 -->
+<button class="bg-surface-container-lowest p-6 rounded-brand border border-outline-variant custom-shadow-l1 hover:shadow-md hover:border-primary-container transition-all text-left flex flex-col gap-4 group">
+<div class="w-12 h-12 rounded-brand bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary-container group-hover:text-on-primary-container transition-standard">
+<span class="material-symbols-outlined">post_add</span>
+</div>
+<div>
+<div class="font-headline-sm text-headline-sm text-on-surface">Add Application</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Directly link a candidate to an active opening.</p>
+</div>
+</button>
+<!-- Action Card 4 -->
+<button class="bg-surface-container-lowest p-6 rounded-brand border border-outline-variant custom-shadow-l1 hover:shadow-md hover:border-primary-container transition-all text-left flex flex-col gap-4 group">
+<div class="w-12 h-12 rounded-brand bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary-container group-hover:text-on-primary-container transition-standard">
+<span class="material-symbols-outlined">corporate_fare</span>
+</div>
+<div>
+<div class="font-headline-sm text-headline-sm text-on-surface">Add Company</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Register a new enterprise partner or subsidiary.</p>
+</div>
+</button>
+</div>
+</section>
+<!-- Status/Activity Placeholder -->
+<section class="bg-surface-container-low/50 border border-dashed border-outline rounded-brand p-12 flex flex-col items-center justify-center text-center gap-4">
+<div class="w-20 h-20 rounded-full bg-surface-container-lowest flex items-center justify-center border border-outline-variant text-outline">
+<span class="material-symbols-outlined text-[40px]">inbox</span>
+</div>
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">No Recent Activity</h3>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-md mx-auto mt-2">The system is ready for data. Start by adding your first job opening or importing candidate profiles.</p>
+</div>
+<button class="font-label-md text-label-md text-primary hover:underline flex items-center gap-2 mt-4">
+                        View Documentation
+                        <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+</button>
+</section>
+</main>
+</div>
+</div>
+<!-- Micro-interaction Script -->
+<script>
+        document.querySelectorAll('button, a').forEach(el => {
+            el.addEventListener('mousedown', function() {
+                this.classList.add('scale-95');
+            });
+            el.addEventListener('mouseup', function() {
+                this.classList.remove('scale-95');
+            });
+            el.addEventListener('mouseleave', function() {
+                this.classList.remove('scale-95');
+            });
+        });
+    </script>
+</body></html>
