@@ -1,46 +1,52 @@
-import React, { useState } from 'react'
-import { ResumeUploadStep } from './ResumeUploadStep'
-import { ResumeReviewStep } from './ResumeReviewStep'
-import type { ResumeUploadResponse } from '../../../types/resume-parsing.types'
-
-// Import your existing manual form component here
+import React, { useRef, useState } from 'react'
 import { CandidateFormModal } from './CandidateFormModal'
+import { CandidateSplitEntryModal } from './CandidateSplitEntryModal'
 
-type Step = 'choose' | 'upload' | 'review' | 'manual'
+type Step = 'choose' | 'split' | 'manual'
 
 interface AddCandidateModalProps {
   onClose: () => void
 }
 
+const ACCEPTED_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp']
+const ACCEPTED_EXTENSIONS = '.pdf,.jpg,.jpeg,.png,.webp'
+const MAX_SIZE_MB = 10
+
 export const AddCandidateModal: React.FC<AddCandidateModalProps> = ({ onClose }) => {
   const [step, setStep] = useState<Step>('choose')
-  const [uploadResult, setUploadResult] = useState<ResumeUploadResponse | null>(null)
+  const [resumeFile, setResumeFile] = useState<File | null>(null)
+  const [fileError, setFileError] = useState('')
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const handleFilePicked = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFileError('')
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (!ACCEPTED_TYPES.includes(file.type)) {
+      setFileError('Invalid file type. Upload a PDF, JPG, PNG, or WEBP.')
+      return
+    }
+    if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+      setFileError(`File is too large. Maximum size is ${MAX_SIZE_MB}MB.`)
+      return
+    }
+    setResumeFile(file)
+    setStep('split')
+  }
 
   if (step === 'manual') {
-    // render your existing CandidateFormModal with onClose
     return <CandidateFormModal onClose={onClose} />
   }
 
-  if (step === 'upload') {
+  if (step === 'split' && resumeFile) {
     return (
-      <ResumeUploadStep
-        onSuccess={(result) => {
-          setUploadResult(result)
-          setStep('review')
+      <CandidateSplitEntryModal
+        resumeFile={resumeFile}
+        onClose={onClose}
+        onBack={() => {
+          setResumeFile(null)
+          setStep('choose')
         }}
-        onBack={() => setStep('choose')}
-        onClose={onClose}
-      />
-    )
-  }
-
-  if (step === 'review' && uploadResult) {
-    return (
-      <ResumeReviewStep
-        uploadResult={uploadResult}
-        onSuccess={onClose}
-        onBack={() => setStep('upload')}
-        onClose={onClose}
       />
     )
   }
@@ -64,19 +70,19 @@ export const AddCandidateModal: React.FC<AddCandidateModalProps> = ({ onClose })
           How would you like to add this candidate?
         </p>
 
+        {fileError && <p className="text-sm text-error mb-4">{fileError}</p>}
+
         <div className="grid grid-cols-2 gap-4">
           <button
             type="button"
-            onClick={() => setStep('upload')}
+            onClick={() => fileInputRef.current?.click()}
             className="flex flex-col items-center gap-3 p-6 border-2 border-outline-variant rounded-xl hover:border-primary hover:bg-primary/5 transition-colors text-center"
           >
-            <span className="material-symbols-outlined text-4xl text-primary">
-              upload_file
-            </span>
+            <span className="material-symbols-outlined text-4xl text-primary">upload_file</span>
             <div>
               <div className="font-semibold text-on-surface">Upload Resume</div>
               <div className="text-xs text-on-surface-variant mt-1">
-                Parse with AI — auto-fills the form
+                Fill the form side-by-side with the resume
               </div>
             </div>
           </button>
@@ -86,9 +92,7 @@ export const AddCandidateModal: React.FC<AddCandidateModalProps> = ({ onClose })
             onClick={() => setStep('manual')}
             className="flex flex-col items-center gap-3 p-6 border-2 border-outline-variant rounded-xl hover:border-primary hover:bg-primary/5 transition-colors text-center"
           >
-            <span className="material-symbols-outlined text-4xl text-primary">
-              edit_note
-            </span>
+            <span className="material-symbols-outlined text-4xl text-primary">edit_note</span>
             <div>
               <div className="font-semibold text-on-surface">Fill Manually</div>
               <div className="text-xs text-on-surface-variant mt-1">
@@ -97,6 +101,14 @@ export const AddCandidateModal: React.FC<AddCandidateModalProps> = ({ onClose })
             </div>
           </button>
         </div>
+
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept={ACCEPTED_EXTENSIONS}
+          onChange={handleFilePicked}
+          className="hidden"
+        />
       </div>
     </div>
   )

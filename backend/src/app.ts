@@ -16,7 +16,6 @@ import helmet from '@fastify/helmet'
 import rateLimit from '@fastify/rate-limit'
 import swagger from '@fastify/swagger'
 import swaggerUi from '@fastify/swagger-ui'
-import { resumeParsingRoutes } from './modules/resume-parsing/resume-parsing.routes'
 
 
 export async function buildApp() {
@@ -169,8 +168,6 @@ export async function buildApp() {
   app.register(marginRecordRoutes, { prefix: '/api/v1/tracker' })
 
   app.register(dashboardRoutes, { prefix: '/api/v1/dashboard' })
-
-  app.register(resumeParsingRoutes, { prefix: '/api/v1/resume-parsing' })
 
   return app
 }

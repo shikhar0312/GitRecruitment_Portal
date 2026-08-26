@@ -31,6 +31,17 @@ export async function createCandidate(values: CreateCandidateFormValues) {
   return response.data.data;
 }
 
+export async function uploadCandidateResume(candidateId: string, file: File) {
+  const formData = new FormData();
+  formData.append('file', file);
+  const response = await apiClient.post<ApiSuccessResponse<{ resume_url: string }>>(
+    `/candidates/${candidateId}/resume`,
+    formData,
+    { headers: { 'Content-Type': 'multipart/form-data' } }
+  );
+  return response.data.data;
+}
+
 export async function addCandidateSkill(candidateId: string, skill: CreateSkillInput) {
   const response = await apiClient.post<ApiSuccessResponse<unknown>>(
     `/candidates/${candidateId}/skills`,
