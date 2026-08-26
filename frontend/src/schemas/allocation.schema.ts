@@ -53,9 +53,6 @@ export const interviewRoundFormSchema = z.object({
   conducted_by: z.string().max(100).optional(),
   outcome: z.enum(['passed', 'failed', 'no_show', 'rescheduled']).optional(),
   feedback: z.string().max(5000).optional(),
-  // UI-only fields — not sent to the API
-  interview_link: z.string().url('Please enter a valid URL').optional().or(z.literal('')),
-  send_email: z.boolean().optional(),
 });
 
 export type InterviewRoundFormValues = z.infer<typeof interviewRoundFormSchema>;

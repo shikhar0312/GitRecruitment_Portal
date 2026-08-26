@@ -273,9 +273,6 @@ export const AllocationDetailDrawer: React.FC<AllocationDetailDrawerProps> = ({
           initialValues={interviewRoundToFormValues(roundModal.round, nextRoundNumber)}
           isPending={saveRound.isPending}
           errorMessage={saveRound.isError ? error : ''}
-          candidateName={allocation.candidate?.full_name ?? ''}
-          candidateEmail={allocation.candidate?.email ?? ''}
-          customerName={allocation.requirement?.customer?.name ?? ''}
           onClose={() => setRoundModal(null)}
           onSubmit={(values) => saveRound.mutate({ mode: roundModal.mode, round: roundModal.round, values })}
         />

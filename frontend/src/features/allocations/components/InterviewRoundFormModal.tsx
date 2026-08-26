@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import {
   interviewRoundFormSchema,
   toInterviewRoundPayload,
@@ -6,17 +6,12 @@ import {
 } from '../../../schemas/allocation.schema';
 import type { InterviewRound } from '../../../types/allocation.types';
 import { ErrorAlert } from '../../../components/feedback/ErrorAlert';
-import { buildMailtoUrl } from '../../../lib/email';
 
 interface InterviewRoundFormModalProps {
   mode: 'create' | 'edit';
   initialValues: InterviewRoundFormValues;
   isPending: boolean;
   errorMessage?: string;
-  /** Candidate details used to pre-compose the notification email */
-  candidateName: string;
-  candidateEmail: string;
-  customerName: string;
   onClose: () => void;
   onSubmit: (values: InterviewRoundFormValues) => void;
 }
@@ -34,8 +29,6 @@ export function interviewRoundToFormValues(
       conducted_by: '',
       outcome: undefined,
       feedback: '',
-      interview_link: '',
-      send_email: false,
     };
   }
   return {
@@ -46,8 +39,6 @@ export function interviewRoundToFormValues(
     conducted_by: round.conducted_by ?? '',
     outcome: round.outcome ?? undefined,
     feedback: round.feedback ?? '',
-    interview_link: '',
-    send_email: false,
   };
 }
 
@@ -56,9 +47,6 @@ export const InterviewRoundFormModal: React.FC<InterviewRoundFormModalProps> = (
   initialValues,
   isPending,
   errorMessage = '',
-  candidateName,
-  candidateEmail,
-  customerName,
   onClose,
   onSubmit,
 }) => {
@@ -80,22 +68,6 @@ export const InterviewRoundFormModal: React.FC<InterviewRoundFormModalProps> = (
       setValidationError(err instanceof Error ? err.message : 'Invalid form data');
     }
   };
-
-  // Build the Gmail URL live as the user types — so the <a> href is always up to date
-  const gmailUrl = useMemo(() => {
-    if (!candidateEmail) return '#';
-    return buildMailtoUrl({
-      candidateName,
-      candidateEmail,
-      customerName,
-      roundNumber: formData.round_number,
-      roundType: formData.round_type,
-      scheduledAt: formData.scheduled_at ?? '',
-      interviewLink: formData.interview_link ?? '',
-    });
-  }, [candidateName, candidateEmail, customerName, formData.round_number, formData.round_type, formData.scheduled_at, formData.interview_link]);
-
-  const canSendEmail = !!candidateEmail;
 
   return (
     <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/50 p-4">
@@ -215,77 +187,15 @@ export const InterviewRoundFormModal: React.FC<InterviewRoundFormModalProps> = (
             </>
           )}
 
-          {/* ── Notify Candidate section (create mode only) ── */}
           {mode === 'create' && (
-            <div className="border border-outline-variant rounded-lg p-4 space-y-3 bg-surface-container-low">
-              <p className="text-sm font-semibold text-on-surface flex items-center gap-2">
-                <span className="material-symbols-outlined text-base">mail</span>
-                Notify Candidate
-              </p>
-
-              {/* Date & Time */}
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Interview Date & Time
-                </label>
-                <input
-                  type="datetime-local"
-                  value={formData.scheduled_at ?? ''}
-                  onChange={(e) => setFormData({ ...formData, scheduled_at: e.target.value })}
-                  className="w-full px-3 py-2 border border-outline-variant rounded-md bg-white"
-                />
-                <p className="text-xs text-on-surface-variant mt-1">
-                  This date & time will appear in the candidate's email.
-                </p>
-              </div>
-
-              {/* Interview Link */}
-              <div>
-                <label className="block text-sm font-medium mb-1">Interview Link</label>
-                <input
-                  type="url"
-                  value={formData.interview_link ?? ''}
-                  onChange={(e) => setFormData({ ...formData, interview_link: e.target.value })}
-                  className="w-full px-3 py-2 border border-outline-variant rounded-md bg-white"
-                  placeholder="https://meet.google.com/abc-xyz"
-                />
-                <p className="text-xs text-on-surface-variant mt-1">
-                  Zoom, Google Meet, Teams, or any meeting URL.
-                </p>
-              </div>
-
-              {/* Live email preview */}
-              <div className="bg-white border border-outline-variant rounded-md p-3 text-xs text-on-surface-variant leading-relaxed">
-                <p className="font-semibold text-on-surface mb-2 text-xs">Email Preview</p>
-                <p><span className="font-medium">To:</span> {candidateEmail || '—'}</p>
-                <p><span className="font-medium">Subject:</span> Your Interview Has Been Scheduled — {customerName || '—'}</p>
-                <hr className="my-2 border-outline-variant" />
-                <p>Hi {candidateName || '[Candidate]'},</p>
-                <br />
-                <p>Your interview has been scheduled:</p>
-                <p>📅 {formData.scheduled_at ? new Date(formData.scheduled_at).toLocaleString() : <span className="italic text-error">Set a date above</span>}</p>
-                <p>🔗 {formData.interview_link || <span className="italic">No link added</span>}</p>
-                <br />
-                <p>Best regards, GIT Software Technologies RMS</p>
-              </div>
-
-              {/* Direct Gmail anchor — user clicks this themselves, cannot be blocked */}
-              {canSendEmail ? (
-                <a
-                  href={gmailUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 w-full px-4 py-2 rounded-md border-2 border-primary text-primary text-sm font-semibold hover:bg-primary hover:text-white transition-colors"
-                >
-                  <span className="material-symbols-outlined text-base">mail</span>
-                  Open Mail App to Send Email
-                </a>
-              ) : (
-                <div className="flex items-center justify-center gap-2 w-full px-4 py-2 rounded-md border-2 border-outline-variant text-on-surface-variant text-sm font-semibold cursor-not-allowed">
-                  <span className="material-symbols-outlined text-base">mail</span>
-                  Set Scheduled At to enable
-                </div>
-              )}
+            <div>
+              <label className="block text-sm font-medium mb-1">Interview Date &amp; Time</label>
+              <input
+                type="datetime-local"
+                value={formData.scheduled_at ?? ''}
+                onChange={(e) => setFormData({ ...formData, scheduled_at: e.target.value })}
+                className="w-full px-3 py-2 border border-outline-variant rounded-md bg-white"
+              />
             </div>
           )}
 
