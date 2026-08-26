@@ -1,6 +1,7 @@
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ErrorBoundary } from './ErrorBoundary';
+import { ToastViewport } from '../components/feedback/ToastViewport';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -18,6 +19,9 @@ interface AppProvidersProps {
 
 export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => (
   <ErrorBoundary>
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={queryClient}>
+      {children}
+      <ToastViewport />
+    </QueryClientProvider>
   </ErrorBoundary>
 );

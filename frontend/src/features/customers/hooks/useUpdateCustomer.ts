@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateCustomer } from '../../../api/services/customers.service';
 import { queryKeys } from '../../../lib/query-keys';
+import { toast } from '../../../store/toastStore';
 import type { CreateCustomerFormValues } from '../../../schemas/customer.schema';
 
 export function useUpdateCustomer(onSuccess?: () => void) {
@@ -10,6 +11,7 @@ export function useUpdateCustomer(onSuccess?: () => void) {
       updateCustomer(id, values),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.customers.all });
+      toast.success('Client updated');
       onSuccess?.();
     },
   });

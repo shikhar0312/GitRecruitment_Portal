@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { updateCandidate } from '../../../api/services/candidates.service';
 import { queryKeys } from '../../../lib/query-keys';
+import { toast } from '../../../store/toastStore';
 import type { CreateCandidateFormValues } from '../../../schemas/candidate.schema';
 
 export function useUpdateCandidate(onSuccess?: () => void) {
@@ -11,6 +12,7 @@ export function useUpdateCandidate(onSuccess?: () => void) {
     onSuccess: (_, { id }) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.candidates.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.candidates.detail(id) });
+      toast.success('Candidate updated');
       onSuccess?.();
     },
   });
