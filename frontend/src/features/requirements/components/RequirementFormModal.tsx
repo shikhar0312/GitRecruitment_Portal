@@ -9,7 +9,7 @@ import { useCreateRequirement } from '../hooks/useCreateRequirement';
 import { useCustomerOptions } from '../hooks/useCustomerOptions';
 import { useRoleOptions } from '../hooks/useRoleOptions';
 import { getValidationErrorMessage } from '../../../lib/errors';
-import { getBudgetLabel } from '../../../lib/formatters';
+import { getBudgetLabel, addMonths, formatDate } from '../../../lib/formatters';
 import { ErrorAlert } from '../../../components/feedback/ErrorAlert';
 
 interface RequirementFormModalProps {
@@ -277,6 +277,27 @@ export const RequirementFormModal: React.FC<RequirementFormModalProps> = ({ onCl
                 onChange={(e) => setFormData({ ...formData, expected_start_date: e.target.value })}
                 className="w-full px-4 py-2 border border-outline-variant rounded-md focus:ring-2 focus:ring-primary focus:border-primary outline-none"
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-on-surface mb-1">
+                Timeline (months open) *
+              </label>
+              <input
+                type="number"
+                required
+                min={1}
+                max={60}
+                value={formData.ttl_months}
+                onChange={(e) => setFormData({ ...formData, ttl_months: Number(e.target.value) })}
+                className="w-full px-4 py-2 border border-outline-variant rounded-md focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+              />
+              <p className="text-xs text-on-surface-variant mt-1">
+                How long this stays open. Defaults to 6 months.
+                {Number(formData.ttl_months) >= 1 && (
+                  <> Expires ~{formatDate(addMonths(new Date(), Number(formData.ttl_months)).toISOString())}.</>
+                )}
+              </p>
             </div>
 
             {formData.hiring_type === 'contract' && (

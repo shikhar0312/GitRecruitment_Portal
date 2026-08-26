@@ -1,6 +1,12 @@
 import React from 'react';
 import { LoadingState } from '../../../components/feedback/LoadingState';
-import { formatBudget, formatDate, formatUnderscoreLabel, getBudgetLabel } from '../../../lib/formatters';
+import {
+  formatBudget,
+  formatDate,
+  formatUnderscoreLabel,
+  getBudgetLabel,
+  getRequirementExpiry,
+} from '../../../lib/formatters';
 import type { Requirement } from '../../../types/requirement.types';
 
 interface RequirementsTableProps {
@@ -95,11 +101,19 @@ export const RequirementsTable: React.FC<RequirementsTableProps> = ({
                   {requirement.role?.title ?? 'N/A'}
                 </td>
                 <td className="px-6 py-4 text-center">
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${statusBadgeClass(requirement.status)}`}
-                  >
-                    {formatUnderscoreLabel(requirement.status)}
-                  </span>
+                  <div className="flex flex-col items-center gap-1">
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-bold uppercase tracking-wide ${statusBadgeClass(requirement.status)}`}
+                    >
+                      {formatUnderscoreLabel(requirement.status)}
+                    </span>
+                    {requirement.status === 'open' &&
+                      getRequirementExpiry(requirement.created_at, requirement.ttl_months).isExpired && (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-red-100 text-red-800">
+                          Expired
+                        </span>
+                      )}
+                  </div>
                 </td>
                 <td className="px-6 py-4 font-body-md text-on-surface">{requirement.location}</td>
                 <td className="px-6 py-4 font-body-md text-on-surface">{requirement.min_exp_years} yrs</td>

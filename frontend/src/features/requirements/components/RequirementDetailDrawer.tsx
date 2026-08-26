@@ -2,7 +2,13 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LoadingState } from '../../../components/feedback/LoadingState';
 import { hasPermission } from '../../../lib/rbac';
-import { formatBudget, formatDate, formatUnderscoreLabel, getBudgetLabel } from '../../../lib/formatters';
+import {
+  formatBudget,
+  formatDate,
+  formatUnderscoreLabel,
+  getBudgetLabel,
+  getRequirementExpiry,
+} from '../../../lib/formatters';
 import { useRequirementDetail } from '../hooks/useRequirementDetail';
 import { useSuggestedCandidates } from '../hooks/useSuggestedCandidates';
 
@@ -97,6 +103,26 @@ export const RequirementDetailDrawer: React.FC<RequirementDetailDrawerProps> = (
                 <div>
                   <span className="text-on-surface-variant block text-xs uppercase tracking-wide">Billing Entity</span>
                   <span>{formatUnderscoreLabel(requirement.billing_entity).toUpperCase()}</span>
+                </div>
+                <div>
+                  <span className="text-on-surface-variant block text-xs uppercase tracking-wide">Timeline</span>
+                  {(() => {
+                    const { expiresAt, isExpired } = getRequirementExpiry(
+                      requirement.created_at,
+                      requirement.ttl_months
+                    );
+                    return (
+                      <span>
+                        {requirement.ttl_months} months · {isExpired ? 'expired' : 'expires'}{' '}
+                        {formatDate(expiresAt.toISOString())}
+                        {isExpired && requirement.status === 'open' && (
+                          <span className="ml-2 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide bg-red-100 text-red-800">
+                            Expired
+                          </span>
+                        )}
+                      </span>
+                    );
+                  })()}
                 </div>
               </section>
 
