@@ -44,11 +44,11 @@ export const TrackerTable: React.FC<TrackerTableProps> = ({ records, isLoading, 
               <th className="px-4 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Candidate</th>
               <th className="px-4 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Status</th>
               <th className="px-4 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Entity</th>
-              <th className="px-4 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right">Demand/Mo</th>
-              <th className="px-4 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right">Bill/Mo</th>
-              <th className="px-4 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right">Bill/Yr</th>
-              <th className="px-4 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right">Margin</th>
-              <th className="px-4 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right">Margin %</th>
+              <th className="px-4 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right">We pay/mo</th>
+              <th className="px-4 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right">We bill/mo</th>
+              <th className="px-4 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right">We bill/yr</th>
+              <th className="px-4 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right">We keep</th>
+              <th className="px-4 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right">We keep %</th>
               <th className="px-4 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Payment</th>
               {canEdit && (
                 <th className="px-4 py-4 font-label-md text-label-md text-on-surface-variant uppercase tracking-wider text-right">Actions</th>

@@ -1,5 +1,5 @@
 import type { AllocationStatus } from '../lib/status-machine';
-import type { BillingEntity } from './margin-record.types';
+import type { BillingEntity, MarginRecord } from './margin-record.types';
 
 export interface DashboardSummary {
   total_active_requirements: number;
@@ -12,9 +12,21 @@ export interface DashboardSummary {
 export interface DashboardEntityMarginSummary {
   billing_entity: BillingEntity;
   currency: string;
+  placements: number;
   total_demand_monthly: number;
   total_billed_monthly: number;
   total_billed_yearly: number;
+  total_margin_monthly: number;
+  margin_pct: number;
+}
+
+export interface DashboardClientMarginSummary {
+  customer_id: string;
+  customer_name: string;
+  billing_entity: BillingEntity;
+  currency: string;
+  placements: number;
+  total_billed_monthly: number;
   total_margin_monthly: number;
   margin_pct: number;
 }
@@ -37,6 +49,10 @@ export interface DashboardAggregates {
   // null when the logged-in user's role can't see the Tracker (viewer) —
   // omitted server-side, not just hidden client-side.
   margin_by_entity: DashboardEntityMarginSummary[] | null;
+  // Per-client margin rollup and the newest tracker rows — both null for
+  // viewer, same Tracker-access gate as margin_by_entity.
+  margin_by_client: DashboardClientMarginSummary[] | null;
+  recent_tracker: MarginRecord[] | null;
   requirements_by_priority: Record<string, number>;
   allocations_by_status: Record<string, number>;
   recent_allocations: DashboardRecentAllocation[];
