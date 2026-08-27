@@ -35,10 +35,28 @@ git-recruitment-portal/
 You can run the project either fully locally or using Docker for the backend and database.
 
 ### Prerequisites
+
 - [Node.js](https://nodejs.org/) (v18+)
 - [Docker](https://www.docker.com/) & Docker Compose (optional, but recommended for DB setup)
 
-### 1. Using Docker (Recommended for Backend & DB)
+### 1. Quick Start (Recommended)
+
+The easiest way to start the entire development environment is using the provided `start.sh` script. This script automatically spins up the PostgreSQL database in Docker and starts both the Fastify backend and React frontend development servers.
+
+```bash
+# Make the script executable (only needed once)
+chmod +x start.sh
+
+# Start the environment
+./start.sh
+```
+
+- **Backend API:** `http://localhost:3000`
+- **Frontend UI:** `http://localhost:5173`
+
+*Press `CTRL+C` in the terminal to stop all servers.*
+
+### 2. Using Docker (Backend & DB Only)
 
 A `docker-compose.yml` file is provided to quickly spin up the **PostgreSQL Database** and the **Fastify Backend**.
 
@@ -46,10 +64,11 @@ A `docker-compose.yml` file is provided to quickly spin up the **PostgreSQL Data
 # Start the database and backend services
 docker compose up --build -d
 ```
+
 - **Backend API** will be accessible at: `http://localhost:3000`
 - **PostgreSQL** will be accessible on port `5433` locally.
 
-### 2. Manual Setup (Local Development)
+### 3. Manual Setup (Local Development)
 
 #### Backend Setup
 
@@ -87,11 +106,13 @@ docker compose up --build -d
    ```bash
    npm run dev
    ```
+
 - **Frontend** will be accessible at `http://localhost:5173` (default Vite port).
 
 ## 🛠 Tech Stack Highlights
 
 **Frontend:**
+
 - **Framework:** React 19, TypeScript, Vite
 - **State & Data Fetching:** Zustand, React Query (@tanstack/react-query)
 - **Styling:** Tailwind CSS, Lucide React (Icons)
@@ -99,6 +120,7 @@ docker compose up --build -d
 - **Validation:** Zod
 
 **Backend:**
+
 - **Framework:** Fastify (Node.js), TypeScript
 - **Database ORM:** Prisma (connected to PostgreSQL)
 - **Security:** Fastify JWT, Helmet, Rate Limit
@@ -108,11 +130,13 @@ docker compose up --build -d
 ## 📝 Available Scripts
 
 ### Frontend Scripts
+
 - `npm run dev`: Starts the Vite dev server.
 - `npm run build`: Compiles TypeScript and builds the production bundle.
 - `npm run lint`: Runs ESLint for code quality.
 
 ### Backend Scripts
+
 - `npm run dev`: Starts the backend dev server with hot-reloading (ts-node-dev).
 - `npm run build`: Compiles the TypeScript backend into standard JS.
 - `npm run test`: Runs the Jest test suite.
