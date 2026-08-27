@@ -104,8 +104,6 @@ export const RequirementsPage: React.FC = () => {
 
       <RequirementsTable
         requirements={requirements}
-        page={page}
-        pageSize={meta.limit}
         isLoading={isLoading}
         isError={isError}
         onViewDetails={handleViewDetails}

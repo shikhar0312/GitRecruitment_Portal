@@ -46,7 +46,6 @@ const PipelineTrack: React.FC<{ status: AllocationStatus }> = ({ status }) => {
       {ALLOCATION_PIPELINE.map((stage, i) => {
         const passed = i < currentIndex;
         const isCurrent = i === currentIndex;
-        const dotColor = passed || isCurrent ? '#2e7d55' : 'var(--tw-line, #d7c3ad)';
         return (
           <React.Fragment key={stage}>
             <span

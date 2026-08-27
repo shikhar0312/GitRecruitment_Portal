@@ -10,8 +10,6 @@ import type { Requirement } from '../../../types/requirement.types';
 
 interface RequirementsTableProps {
   requirements: Requirement[];
-  page: number;
-  pageSize: number;
   isLoading: boolean;
   isError: boolean;
   onViewDetails: (requirementId: string) => void;
@@ -33,8 +31,6 @@ const PRIORITY_STRIPE: Record<string, string> = {
 
 export const RequirementsTable: React.FC<RequirementsTableProps> = ({
   requirements,
-  page,
-  pageSize,
   isLoading,
   isError,
   onViewDetails,
@@ -116,7 +112,7 @@ export const RequirementsTable: React.FC<RequirementsTableProps> = ({
                     {requirement.min_exp_years}–{requirement.max_exp_years}y
                   </td>
                   <td className="px-4 py-4 font-body-md text-on-surface text-center tabular-nums">
-                    {requirement.filled_positions}/{requirement.no_of_positions}
+                    {requirement.no_of_positions}
                   </td>
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-2">
