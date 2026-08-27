@@ -38,6 +38,26 @@ export const ALL_ALLOCATION_STATUSES: AllocationStatus[] = [
   'withdrawn',
 ];
 
+// The happy-path pipeline, in order, for the stepper visual. rejected and
+// withdrawn are terminal off-ramps and sit outside this track.
+export const ALLOCATION_PIPELINE: AllocationStatus[] = [
+  'shortlisted',
+  'screening',
+  'interviewing',
+  'offered',
+  'placed',
+];
+
+export function isOffRamp(status: AllocationStatus): boolean {
+  return status === 'rejected' || status === 'withdrawn';
+}
+
+// How far along the pipeline a status sits (0-based index), or -1 for
+// off-ramp statuses that aren't on the track.
+export function getPipelineIndex(status: AllocationStatus): number {
+  return ALLOCATION_PIPELINE.indexOf(status);
+}
+
 export function getAllowedNextStatuses(current: AllocationStatus): AllocationStatus[] {
   return TRANSITIONS[current] ?? [];
 }

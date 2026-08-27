@@ -4,6 +4,7 @@ import {
   createCandidate,
 } from '../../../api/services/candidates.service';
 import { queryKeys } from '../../../lib/query-keys';
+import { toast } from '../../../store/toastStore';
 import {
   parseSkillsList,
   type CreateCandidateFormValues,
@@ -28,9 +29,10 @@ export function useCreateCandidate(onSuccess?: () => void) {
 
       return candidate;
     },
-    onSuccess: () => {
+    onSuccess: (candidate) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.candidates.all });
       queryClient.invalidateQueries({ queryKey: queryKeys.dashboard.all });
+      toast.success(`${candidate.full_name} added to candidates`);
       onSuccess?.();
     },
   });

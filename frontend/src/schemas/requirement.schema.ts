@@ -36,6 +36,11 @@ export const createRequirementFormSchema = z
     required_skills: z.string().min(1, 'At least one required skill is needed'),
     nice_to_have_skills: z.string().optional(),
     priority: jobPrioritySchema.default('medium'),
+    ttl_months: z.coerce
+      .number({ invalid_type_error: 'Timeline must be a number' })
+      .int('Timeline must be a whole number of months')
+      .min(1, 'Timeline must be at least 1 month')
+      .max(60, 'Timeline cannot exceed 60 months'),
     visa_sponsorship_available: z.boolean().optional(),
     clearance_required: z.string().max(100).optional(),
   })
@@ -67,6 +72,7 @@ export const createRequirementFormDefaults: CreateRequirementFormValues = {
   required_skills: '',
   nice_to_have_skills: '',
   priority: 'medium',
+  ttl_months: 6,
   visa_sponsorship_available: false,
   clearance_required: '',
 };
@@ -88,6 +94,7 @@ export function toCreateRequirementPayload(values: CreateRequirementFormValues) 
     location: parsed.location,
     work_mode: parsed.work_mode as WorkMode,
     priority: parsed.priority as JobPriority,
+    ttl_months: parsed.ttl_months,
     required_skills: parseCommaSeparatedList(parsed.required_skills),
   };
 

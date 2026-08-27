@@ -6,8 +6,6 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(1),
   PORT: z.coerce.number().default(3000),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
-  OCR_PROVIDER: z.enum(['openai', 'local']).default('openai'),
-  OPENAI_API_KEY: z.string().min(1).optional(),
 })
 
 const parsed = envSchema.safeParse(process.env)

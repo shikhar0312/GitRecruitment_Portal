@@ -1,3 +1,5 @@
+import fs from 'fs'
+import path from 'path'
 import { prisma } from '../../config/prisma'
 import { NotFoundError, ConflictError } from '../../shared/errors'
 import { getPagination, getPaginationMeta } from '../../shared/utils/pagination'
@@ -94,6 +96,61 @@ export async function getCandidateById(id: string) {
 
   if (!candidate) throw new NotFoundError('Candidate not found')
   return candidate
+}
+
+// ─── Resume file storage ──────────────────────────────────
+// The resume is attached to a candidate after creation: HR uploads it in
+// the split-screen add flow, we save it to disk and store a candidate-scoped
+// path in resume_url. Files are streamed back through an auth-protected
+// route (see downloadCandidateResume) rather than a public static dir.
+const RESUME_DIR = path.join(process.cwd(), 'uploads', 'resumes')
+
+export async function attachCandidateResume(
+  candidateId: string,
+  fileBuffer: Buffer,
+  originalFilename: string
+) {
+  const candidate = await prisma.candidates.findUnique({ where: { id: candidateId } })
+  if (!candidate) throw new NotFoundError('Candidate not found')
+
+  if (!fs.existsSync(RESUME_DIR)) {
+    fs.mkdirSync(RESUME_DIR, { recursive: true })
+  }
+
+  const safeName = `${candidateId}-${Date.now()}-${originalFilename.replace(/[^a-z0-9.\-_]/gi, '_')}`
+  const filePath = path.join(RESUME_DIR, safeName)
+  fs.writeFileSync(filePath, fileBuffer)
+
+  // resume_url stores the API path the frontend fetches, not the disk path.
+  const resumeUrl = `/candidates/${candidateId}/resume`
+  await prisma.candidates.update({
+    where: { id: candidateId },
+    data: { resume_url: resumeUrl },
+  })
+
+  // The disk location is derived from the stored file, so remember it via a
+  // sidecar lookup: we re-scan the dir by prefix when serving (see below).
+  return { resume_url: resumeUrl, stored_path: filePath }
+}
+
+export async function getCandidateResumePath(candidateId: string): Promise<string> {
+  const candidate = await prisma.candidates.findUnique({
+    where: { id: candidateId },
+    select: { resume_url: true },
+  })
+  if (!candidate) throw new NotFoundError('Candidate not found')
+  if (!candidate.resume_url) throw new NotFoundError('This candidate has no resume on file')
+
+  // Files are named "<candidateId>-<timestamp>-<name>"; the newest match wins
+  // if a resume was replaced.
+  if (!fs.existsSync(RESUME_DIR)) throw new NotFoundError('Resume file not found')
+  const matches = fs
+    .readdirSync(RESUME_DIR)
+    .filter((name) => name.startsWith(`${candidateId}-`))
+    .sort()
+  const latest = matches[matches.length - 1]
+  if (!latest) throw new NotFoundError('Resume file not found')
+  return path.join(RESUME_DIR, latest)
 }
 
 export async function createCandidate(

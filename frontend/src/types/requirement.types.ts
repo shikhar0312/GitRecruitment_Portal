@@ -39,6 +39,7 @@ export interface Requirement {
   required_skills: string[];
   nice_to_have_skills: string[];
   priority: JobPriority;
+  ttl_months: number;
   visa_sponsorship_available?: boolean | null;
   clearance_required?: string | null;
   closing_date?: string | null;

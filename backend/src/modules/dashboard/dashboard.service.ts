@@ -18,6 +18,8 @@ export async function getDashboardAggregates(userRole: string) {
     recentAllocations,
     totalCustomers,
     marginByEntity,
+    marginByClientRows,
+    recentTracker,
   ] = await Promise.all([
     // Total active requirements
     prisma.requirements.count({
@@ -95,6 +97,71 @@ export async function getDashboardAggregates(userRole: string) {
             billed_converted_yearly: true,
             margin_amount: true,
           },
+          _count: { id: true },
+        })
+      : Promise.resolve([]),
+
+    // Per-client margin rollup, for the "Margin by Client" table on the
+    // dashboard. Grouped by customer AND billing_entity (not customer
+    // alone) so every row stays in a single reporting currency — the same
+    // no-blend-across-currencies rule the entity totals follow. A client
+    // billed through two entities therefore shows two rows, each accurate
+    // in its own currency, rather than one silently-mixed figure.
+    // Aggregated in SQL via a raw grouped query because the customer lives
+    // two relations away from margin_records (via allocation → requirement),
+    // which Prisma's groupBy can't reach directly.
+    canViewMargin
+      ? prisma.$queryRaw<
+          {
+            customer_id: string
+            customer_name: string
+            billing_entity: string
+            placements: bigint
+            total_billed_monthly: unknown
+            total_margin_monthly: unknown
+          }[]
+        >`
+          SELECT
+            c.id                          AS customer_id,
+            c.name                        AS customer_name,
+            m.billing_entity              AS billing_entity,
+            COUNT(*)                      AS placements,
+            SUM(m.billed_converted)       AS total_billed_monthly,
+            SUM(m.margin_amount)          AS total_margin_monthly
+          FROM margin_records m
+          JOIN allocations   a ON a.id = m.allocation_id
+          JOIN requirements  r ON r.id = a.requirement_id
+          JOIN customers     c ON c.id = r.customer_id
+          GROUP BY c.id, c.name, m.billing_entity
+          ORDER BY SUM(m.margin_amount) DESC
+          LIMIT 10
+        `
+      : Promise.resolve([]),
+
+    // Latest tracker rows, embedded on the dashboard so leadership sees
+    // real placements without opening the full Tracker page. Same shape
+    // the Tracker table already consumes, just capped at the newest 10.
+    canViewMargin
+      ? prisma.margin_records.findMany({
+          take: 10,
+          orderBy: { created_at: 'desc' },
+          include: {
+            allocation: {
+              select: {
+                id: true,
+                status: true,
+                candidate: { select: { id: true, full_name: true, email: true } },
+                requirement: {
+                  select: {
+                    id: true,
+                    billing_entity: true,
+                    customer: { select: { id: true, name: true } },
+                    role: { select: { id: true, title: true } },
+                  },
+                },
+              },
+            },
+          },
         })
       : Promise.resolve([]),
   ])
@@ -111,15 +178,40 @@ export async function getDashboardAggregates(userRole: string) {
         const totalBilledMonthly = Number(group?._sum.billed_converted ?? 0)
         const totalBilledYearly = Number(group?._sum.billed_converted_yearly ?? 0)
         const totalMargin = Number(group?._sum.margin_amount ?? 0)
+        const placements = Number(group?._count.id ?? 0)
         const marginPct = totalBilledMonthly !== 0 ? (totalMargin / totalBilledMonthly) * 100 : 0
 
         return {
           billing_entity: entity,
           currency,
+          placements,
           total_demand_monthly: totalDemand,
           total_billed_monthly: totalBilledMonthly,
           total_billed_yearly: totalBilledYearly,
           total_margin_monthly: totalMargin,
+          margin_pct: marginPct,
+        }
+      })
+    : null
+
+  // Shape the raw per-client rows: coerce the SQL bigint/decimal outputs to
+  // numbers, recompute margin % from the summed amounts (never averaged),
+  // and tag each row with the reporting currency for its entity.
+  const marginByClient = canViewMargin
+    ? marginByClientRows.map((row) => {
+        const totalBilledMonthly = Number(row.total_billed_monthly ?? 0)
+        const totalMarginMonthly = Number(row.total_margin_monthly ?? 0)
+        const marginPct =
+          totalBilledMonthly !== 0 ? (totalMarginMonthly / totalBilledMonthly) * 100 : 0
+
+        return {
+          customer_id: row.customer_id,
+          customer_name: row.customer_name,
+          billing_entity: row.billing_entity,
+          currency: REPORTING_CURRENCY_BY_ENTITY[row.billing_entity] ?? '',
+          placements: Number(row.placements),
+          total_billed_monthly: totalBilledMonthly,
+          total_margin_monthly: totalMarginMonthly,
           margin_pct: marginPct,
         }
       })
@@ -134,6 +226,8 @@ export async function getDashboardAggregates(userRole: string) {
       total_customers: totalCustomers,
     },
     margin_by_entity: entityMarginSummary,
+    margin_by_client: marginByClient,
+    recent_tracker: canViewMargin ? recentTracker : null,
     requirements_by_priority: requirementsByPriority.reduce(
       (acc, item) => {
         acc[item.priority] = item._count.id

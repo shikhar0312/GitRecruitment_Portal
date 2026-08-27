@@ -16,7 +16,6 @@ import helmet from '@fastify/helmet'
 import rateLimit from '@fastify/rate-limit'
 import swagger from '@fastify/swagger'
 import swaggerUi from '@fastify/swagger-ui'
-import { resumeParsingRoutes } from './modules/resume-parsing/resume-parsing.routes'
 
 
 export async function buildApp() {
@@ -39,12 +38,17 @@ export async function buildApp() {
   })
   
   // ─── Plugins ───────────────────────────────────────────
+  // Allowed origins: always the local dev ports, plus any comma-separated
+  // origins from CORS_ORIGIN (set this to the deployed frontend URL in prod,
+  // e.g. "https://your-app.vercel.app"). Env-driven so deploying to a new
+  // frontend URL never needs a code change.
+  const corsOrigins = [
+    'http://localhost:5173',
+    'http://localhost:5178',
+    ...(process.env.CORS_ORIGIN?.split(',').map((o) => o.trim()).filter(Boolean) ?? []),
+  ]
   await app.register(cors, {
-    origin: [
-      'http://localhost:5173',
-      'http://localhost:5178',
-      'https://git-recruitment-portal.vercel.app',
-    ],
+    origin: corsOrigins,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   })
@@ -169,8 +173,6 @@ export async function buildApp() {
   app.register(marginRecordRoutes, { prefix: '/api/v1/tracker' })
 
   app.register(dashboardRoutes, { prefix: '/api/v1/dashboard' })
-
-  app.register(resumeParsingRoutes, { prefix: '/api/v1/resume-parsing' })
 
   return app
 }

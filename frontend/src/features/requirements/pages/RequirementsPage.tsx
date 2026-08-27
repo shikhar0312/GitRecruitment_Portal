@@ -7,6 +7,7 @@ import { RequirementsToolbar } from '../components/RequirementsToolbar';
 import { RequirementsTable } from '../components/RequirementsTable';
 import { RequirementFormModal } from '../components/RequirementFormModal';
 import { RequirementDetailDrawer } from '../components/RequirementDetailDrawer';
+import { ImportRequirementsModal } from '../components/ImportRequirementsModal';
 
 export const RequirementsPage: React.FC = () => {
   const [search, setSearch] = useState('');
@@ -18,6 +19,7 @@ export const RequirementsPage: React.FC = () => {
   const [sortOrder, setSortOrder] = useState('desc');
   const [page, setPage] = useState(1);
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isImportOpen, setIsImportOpen] = useState(false);
   const [selectedRequirementId, setSelectedRequirementId] = useState<string | null>(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
@@ -54,14 +56,24 @@ export const RequirementsPage: React.FC = () => {
         </div>
 
         {hasPermission('create_requirement') && (
-          <button
-            type="button"
-            onClick={() => setIsFormOpen(true)}
-            className="flex items-center gap-2 bg-primary-container text-on-primary-container px-6 py-3 rounded-lg font-semibold shadow-sm hover:opacity-90 transition-all active:scale-95"
-          >
-            <span className="material-symbols-outlined">add</span>
-            Add Requirement
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setIsImportOpen(true)}
+              className="flex items-center gap-2 border border-outline-variant text-on-surface px-5 py-3 rounded-lg font-semibold hover:bg-surface-variant/10 transition-all active:scale-95"
+            >
+              <span className="material-symbols-outlined">upload_file</span>
+              Import from Excel
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsFormOpen(true)}
+              className="flex items-center gap-2 bg-primary-container text-on-primary-container px-6 py-3 rounded-lg font-semibold shadow-sm hover:opacity-90 transition-all active:scale-95"
+            >
+              <span className="material-symbols-outlined">add</span>
+              Add Requirement
+            </button>
+          </div>
         )}
       </div>
 
@@ -102,6 +114,7 @@ export const RequirementsPage: React.FC = () => {
       <Pagination page={page} meta={meta} onPageChange={setPage} />
 
       {isFormOpen && <RequirementFormModal onClose={() => setIsFormOpen(false)} />}
+      {isImportOpen && <ImportRequirementsModal onClose={() => setIsImportOpen(false)} />}
 
       <RequirementDetailDrawer
         requirementId={selectedRequirementId}

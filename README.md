@@ -142,4 +142,38 @@ docker compose up --build -d
 - `npm run test`: Runs the Jest test suite.
 - `npm run db:generate`: Generates the Prisma client.
 - `npm run db:migrate`: Pushes schema changes to the database.
+- `npm run db:seed`: Seeds the database with demo data (users, clients, requirements, tracker records).
 - `npm run db:studio`: Opens Prisma Studio for visual database management.
+
+## ✨ Features
+
+### Bulk Import of Requirements (Excel / CSV)
+
+Instead of entering requirements one at a time, HR can upload a spreadsheet and create many requirements in a single pass — useful when a client sends a sheet of open roles, or when demand is already tracked in Excel.
+
+**How it works (upload → preview → confirm):**
+
+1. On the **Requirements** page, click **Import from Excel**.
+2. **Download the template** — a pre-labelled `.xlsx` with one example row, so the sheet always matches the expected columns.
+3. Fill in one row per requirement and **upload** the file (`.xlsx` or `.csv`).
+4. The backend parses the file, resolves clients/roles, validates every row, and returns a **preview**: how many rows are ready and, for any that aren't, the exact reason per row.
+5. Click **Import** to create the valid rows. **Valid rows are always imported; rows with errors are skipped and reported** so they can be fixed and re-uploaded — one bad row never blocks the rest.
+
+**Matching rules:**
+
+- **Client** and **Role** are matched **by name** (case-insensitive) against existing records — no IDs required. A name that doesn't match an existing client or role is flagged as an error for that row (it is **not** auto-created).
+- **Billing Entity** accepts friendly labels (e.g. `UK Ltd`, `India LLP`, `UAE FZE`).
+- Multi-value fields (**Required Skills**, **Nice-to-have Skills**) are comma-separated within a single cell.
+- Import validation reuses the **same Zod schema as the manual "Add Requirement" form**, so the two can never diverge.
+
+**Template columns:** Client\*, Role\*, Billing Entity\*, Hiring Type\*, Status, Priority, Work Mode\*, Location\*, Min Exp (years)\*, Max Exp (years)\*, No. of Positions\*, Budget Min, Budget Max, Currency, Min Contract (months), Notice Period Buyback, Required Skills, Nice-to-have Skills, Visa Sponsorship Available, Clearance Required, Expected Start Date, Closing Date, Job Description. *(\* = required.)*
+
+**API endpoints** (all under `/api/v1/requirements`, JWT-protected; import actions require the `recruiter`, `account_manager`, or `admin` role):
+
+| Method | Path | Purpose |
+| ------ | ---- | ------- |
+| `GET`  | `/import/template` | Download the `.xlsx` template |
+| `POST` | `/import/preview`  | Upload a file (multipart); returns `{ valid, errors, totalRows }` — nothing is written |
+| `POST` | `/import/commit`   | Create the previewed valid rows in one transaction; returns `{ created, skipped }` |
+
+> Parsing is done server-side with [SheetJS (`xlsx`)](https://www.npmjs.com/package/xlsx) so that name resolution and validation run where the data lives.

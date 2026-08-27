@@ -244,6 +244,7 @@ model requirements {
   required_skills              String[]
   nice_to_have_skills          String[]
   priority                     Priority
+  ttl_months                   Int                @default(6)
   visa_sponsorship_available   Boolean?
   clearance_required           String?
   closing_date                 DateTime?          @db.Date

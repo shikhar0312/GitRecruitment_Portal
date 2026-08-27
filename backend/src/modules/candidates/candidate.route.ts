@@ -1,5 +1,8 @@
 import { FastifyInstance } from 'fastify'
+import fs from 'fs'
+import multipart from '@fastify/multipart'
 import { verifyToken } from '../../shared/middleware/auth.middleware'
+import { ValidationError } from '../../shared/errors'
 import {
   requireAdmin,
   requireRecruiter,
@@ -30,10 +33,19 @@ import {
   deleteCertification,
   addLanguage,
   deleteLanguage,
+  attachCandidateResume,
+  getCandidateResumePath,
 } from './candidate.service'
+
+const RESUME_MIME_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp']
+const RESUME_MAX_SIZE = 10 * 1024 * 1024 // 10MB
 
 export async function candidateRoutes(app: FastifyInstance) {
   app.addHook('preHandler', verifyToken)
+
+  app.register(multipart, {
+    limits: { fileSize: RESUME_MAX_SIZE },
+  })
 
   // All authenticated users can read
   app.get('/', { preHandler: requireAnyRole }, async (request) => {
@@ -61,6 +73,27 @@ export async function candidateRoutes(app: FastifyInstance) {
     const body = UpdateCandidateSchema.parse(request.body)
     const data = await updateCandidate(id, body)
     return { success: true, data }
+  })
+
+  // ─── Resume file ──────────────────────────────────────
+  // Attach an uploaded resume to a candidate (HR's split-screen add flow).
+  app.post('/:id/resume', { preHandler: requireRecruiter }, async (request, reply) => {
+    const { id } = request.params as { id: string }
+    const file = await request.file()
+    if (!file) throw new ValidationError('No file uploaded')
+    if (!RESUME_MIME_TYPES.includes(file.mimetype)) {
+      throw new ValidationError('Invalid file type. Only PDF, JPG, PNG, and WEBP are allowed')
+    }
+    const buffer = await file.toBuffer()
+    const data = await attachCandidateResume(id, buffer, file.filename)
+    return reply.status(201).send({ success: true, data })
+  })
+
+  // Stream a candidate's resume back through auth (not a public static dir).
+  app.get('/:id/resume', { preHandler: requireAnyRole }, async (request, reply) => {
+    const { id } = request.params as { id: string }
+    const filePath = await getCandidateResumePath(id)
+    return reply.send(fs.createReadStream(filePath))
   })
 
   // ─── Skills ───────────────────────────────────────────

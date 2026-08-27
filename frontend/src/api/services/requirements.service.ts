@@ -52,3 +52,47 @@ export async function updateRequirement(id: string, values: CreateRequirementFor
 export async function deleteRequirement(id: string) {
   await apiClient.delete(`/requirements/${id}`);
 }
+
+// ─── Excel/CSV bulk import ──────────────────────────────────
+export interface RequirementImportRowError {
+  row: number;
+  reasons: string[];
+}
+
+export interface RequirementImportPreview {
+  valid: Record<string, unknown>[];
+  errors: RequirementImportRowError[];
+  totalRows: number;
+}
+
+export async function downloadRequirementsTemplate() {
+  const response = await apiClient.get('/requirements/import/template', {
+    responseType: 'blob',
+  });
+  const url = window.URL.createObjectURL(response.data as Blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'requirements-template.xlsx';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.URL.revokeObjectURL(url);
+}
+
+export async function previewRequirementsImport(file: File) {
+  const formData = new FormData();
+  formData.append('file', file);
+  const response = await apiClient.post<ApiSuccessResponse<RequirementImportPreview>>(
+    '/requirements/import/preview',
+    formData,
+    { headers: { 'Content-Type': 'multipart/form-data' } }
+  );
+  return response.data.data;
+}
+
+export async function commitRequirementsImport(rows: Record<string, unknown>[]) {
+  const response = await apiClient.post<
+    ApiSuccessResponse<{ created: number; skipped: number }>
+  >('/requirements/import/commit', { rows });
+  return response.data.data;
+}

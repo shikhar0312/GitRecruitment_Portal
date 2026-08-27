@@ -23,6 +23,7 @@ export const CreateRequirementSchema = z.object({
   required_skills: z.array(z.string().max(50)).max(30).default([]),
   nice_to_have_skills: z.array(z.string().max(50)).max(30).default([]),
   priority: z.enum(['low', 'medium', 'high', 'urgent']).default('medium'),
+  ttl_months: z.number().int().min(1).max(60).default(6),
   visa_sponsorship_available: z.boolean().optional(),
   clearance_required: z.string().max(100).optional(),
   closing_date: z.string().datetime().optional(),
