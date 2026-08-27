@@ -37,7 +37,7 @@ export const createRequirementFormSchema = z
     nice_to_have_skills: z.string().optional(),
     priority: jobPrioritySchema.default('medium'),
     ttl_months: z.coerce
-      .number({ invalid_type_error: 'Timeline must be a number' })
+      .number({ error: 'Timeline must be a number' })
       .int('Timeline must be a whole number of months')
       .min(1, 'Timeline must be at least 1 month')
       .max(60, 'Timeline cannot exceed 60 months'),
